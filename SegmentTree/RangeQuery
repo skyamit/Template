@@ -1,0 +1,89 @@
+import java.util.*;
+
+public class SegmentTree{
+	public static void main(String[] args){
+		Scanner sc = new Scanner(System.in);
+		int n1 = 5;
+		int n2 = 5;
+		SGTree sgt1 = new SGTree(n1);
+		SGTree sgt2 = new SGTree(n2);
+		sgt1.build(new int[]{9,5,1,3,6});
+		sgt2.build(new int[]{1,4,6,7,3});
+		System.out.println(sgt1.query(0,4));
+		System.out.println(sgt2.query(0,4));
+		sgt1.update(2,4);
+		sgt2.update(3,-5);
+		System.out.println(sgt1.query(0,4));
+		System.out.println(sgt2.query(0,4));
+	}
+}
+
+class SGTree{
+	int seg[];
+	int n;
+	public SGTree(int n){
+		seg = new int[n*4+1];
+		this.n = n;
+	}
+
+	public void build(int[] arr){
+		build(0,n-1,0,arr);
+	}
+
+	public void update(int ind,int val){
+		update(0,n-1,0,ind,val);
+	}
+
+	public int query(int l,int r){
+		return query(0,n-1,0,l,r);
+	}
+
+	public void build(int low,int high,int index,int[] arr){
+		if(low==high){
+			seg[index] = arr[low];
+			return;
+		}
+
+		int mid = low + (high-low)/2;
+		build(low,mid,index*2+1,arr);
+		build(mid+1,high,index*2+2,arr);
+
+		seg[index] = Math.min(seg[index*2+1],seg[index*2+2]);
+	}
+
+	public int query(int low,int high,int index,int l,int r){
+		
+		// no overlapping
+		if(low>r || high<l)
+			return Integer.MAX_VALUE;
+
+		// overlapping
+		if(low>=l && high<=r)
+			return seg[index];
+
+		// partial overlapping
+		int mid = low + (high-low)/2;
+		int left = query(low,mid,index*2+1,l,r);
+		int right = query(mid+1,high,index*2+2,l,r);
+
+		return Math.min(left,right);
+	}
+
+	public void update(int low,int high,int index,int i,int val){
+		if(low==high){
+			seg[index] = val;
+			return;
+		}
+
+		int mid = low + (high-low)/2;
+		if(mid<i){
+			update(mid+1,high,2*index+2,i,val);
+		}
+		else{
+			update(low,mid,2*index+1,i,val);
+		}
+
+		seg[index] = Math.min(seg[index*2+1],seg[index*2+2]);
+		return;
+	}
+}
