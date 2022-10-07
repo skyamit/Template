@@ -1,0 +1,44 @@
+    // with one deletion allowed
+    
+class Solution {
+    
+    public int maximumSum(int[] arr) {
+        // return recursion(arr,0,new PriorityQueue<>());
+        return kadaneAlgo(arr);
+    }
+    
+    public int kadaneAlgo(int[] arr){
+        int res = arr[0];
+        int curr = arr[0];
+        int prev = 0;
+        
+        for(int i=1;i<arr.length;i++){
+            prev = Math.max(curr,prev + arr[i]);
+            curr = Math.max(curr + arr[i], arr[i]);
+            res = Math.max(curr,Math.max(res,prev));
+        }
+        
+        return res;
+    }
+ }   
+    
+ 
+    
+    
+  // Maximum subarray sum
+  class Solution {
+  public int maxSubArray(int[] nums) {
+      int max = nums[0];
+
+      int sum = 0;
+      for(int num : nums){
+          if(sum<0){
+              sum = 0;
+          }
+          sum += num;
+          max = Math.max(sum,max);
+      }
+
+      return max;
+  }
+}
